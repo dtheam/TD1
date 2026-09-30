@@ -1,0 +1,19 @@
+name: Pipeline Python
+
+# Se lance à chaque commit (push) de l'utilisateur
+on: [push]
+
+jobs:
+  run-python-script:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # NOUVEAUTÉ : La machine virtuelle de GitHub est vide par défaut.
+      # Cette action officielle télécharge le code de ton dépôt sur la machine
+      # pour qu'elle puisse "voir" et utiliser ton fichier script.py
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v4
+
+      # On exécute le script avec la commande python3
+      - name: Exécuter le script Python
+        run: python3 script.py
