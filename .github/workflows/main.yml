@@ -13,16 +13,3 @@ jobs:
       # L'étape unique qui écrit "Hello World" dans les logs
       - name: Dire bonjour
         run: echo "Hello World"
-  
-  job-prenom:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Afficher le prénom
-        # Fait appel à la variable PRENOM configurée sur GitHub
-        run: echo "Mon prénom est ${{ vars.PRENOM }}"
-
-  job-email:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Afficher l'email
-        run: echo "Mon email est ${{ vars.EMAIL }}"

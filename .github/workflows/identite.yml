@@ -1,0 +1,17 @@
+name: Pipeline Identité
+
+on: [push]
+
+jobs:
+  job-prenom:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Afficher le prénom
+        # Fait appel à la variable PRENOM configurée sur GitHub
+        run: echo "Mon prénom est ${{ vars.PRENOM }}"
+
+  job-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Afficher l'email
+        run: echo "Mon email est ${{ vars.EMAIL }}"
