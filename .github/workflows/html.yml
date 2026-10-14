@@ -1,39 +1,51 @@
-name: Deploy Page HTML
+name: Déploiement HTML
 
-# Se déclenche à chaque push sur la branche main
 on:
   push:
     branches:
       - main
 
-# Autorisations nécessaires pour que le script puisse publier le site
 permissions:
   contents: read
   pages: write
   id-token: write
 
 jobs:
-  deploy-pages:
-    # Déclare que ce job déploie vers l'environnement "github-pages"
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-      
+  # 1. NOUVEAU JOB : Linting du code HTML
+  lint-html:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
+      # htmlhint fonctionne avec Node.js, on l'installe donc rapidement
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Lancer le linter HTML
+        # npx permet de lancer htmlhint sans avoir à l'installer globalement
+        run: npx htmlhint "index.html"
+
+  # 2. JOB DE DÉPLOIEMENT (Modifié)
+  deploy-pages:
+    # L'ASTUCE EST ICI : on exige que le job "lint-html" réussisse d'abord !
+    needs: lint-html 
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
       - name: Configurer GitHub Pages
         uses: actions/configure-pages@v4
-
       - name: Préparer les fichiers (Artifact)
         uses: actions/upload-pages-artifact@v3
         with:
-          # Point "." signifie qu'on prend tout le dossier racine (là où est index.html)
           path: '.'
-
       - name: Déployer sur GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

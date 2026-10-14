@@ -1,0 +1,25 @@
+---
+- name: Déployer Nginx et la page Hello World
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Installer Nginx (sans mettre à jour le cache)
+      apt:
+        name: nginx
+        state: present
+        update_cache: no  # <-- C'est ici qu'on change !
+
+    - name: S'assurer que le service Nginx est démarré et activé
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copier le fichier index.html dans le dossier web par défaut
+      copy:
+        src: ./index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
