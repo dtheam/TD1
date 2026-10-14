@@ -1,0 +1,12 @@
+name: Pipeline Nom de Branche
+
+# Se lance à chaque push, sur n'importe quelle branche
+on: [push]
+
+jobs:
+  afficher-branche:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Afficher le nom de la branche actuelle
+        # On utilise une variable d'environnement native de GitHub
+        run: echo "Cette pipeline tourne actuellement dans la branche : ${{ github.ref_name }}"
