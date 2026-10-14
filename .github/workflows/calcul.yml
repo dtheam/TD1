@@ -1,0 +1,70 @@
+name: Pipeline Calcul
+
+# Permet de lancer le script manuellement depuis GitHub en saisissant un nombre
+on:
+  workflow_dispatch:
+    inputs:
+      nombre:
+        description: 'Nombre de départ à diviser'
+        required: true
+        default: '64'
+
+jobs:
+  Dev:
+    runs-on: ubuntu-latest
+    # On déclare que ce job va "exporter" une variable pour les suivants
+    outputs:
+      resultat_dev: ${{ steps.calcul_dev.outputs.valeur }}
+      
+    steps:
+      - name: Diviser par 2
+        id: calcul_dev
+        run: |
+          # On récupère le nombre de départ
+          DEPART=${{ inputs.nombre }}
+          RES=$(( DEPART / 2 ))
+          echo "Le résultat dans Dev est : $RES"
+          
+          # Vérification pair/impair (modulo 2)
+          if [ $(( RES % 2 )) -ne 0 ]; then
+            echo "Le résultat est impair ! Arrêt immédiat."
+            exit 1 # Code d'erreur pour stopper la pipeline
+          fi
+          
+          # Si pair, on sauvegarde le résultat pour le job suivant
+          echo "valeur=$RES" >> $GITHUB_OUTPUT
+
+  Val:
+    # Le job Val ne se lance QUE si Dev s'est terminé avec succès
+    needs: Dev
+    runs-on: ubuntu-latest
+    outputs:
+      resultat_val: ${{ steps.calcul_val.outputs.valeur }}
+      
+    steps:
+      - name: Diviser par 4
+        id: calcul_val
+        run: |
+          # On récupère le résultat du job Dev
+          DEPART=${{ needs.Dev.outputs.resultat_dev }}
+          RES=$(( DEPART / 4 ))
+          echo "Le résultat dans Val est : $RES"
+          
+          if [ $(( RES % 2 )) -ne 0 ]; then
+            echo "Le résultat est impair ! Arrêt immédiat."
+            exit 1
+          fi
+          
+          echo "valeur=$RES" >> $GITHUB_OUTPUT
+
+  Prod:
+    # Le job Prod ne se lance QUE si Val s'est terminé avec succès
+    needs: Val
+    runs-on: ubuntu-latest
+    steps:
+      - name: Diviser par 8
+        run: |
+          # On récupère le résultat du job Val
+          DEPART=${{ needs.Val.outputs.resultat_val }}
+          RES=$(( DEPART / 8 ))
+          echo "Le résultat final dans Prod est : $RES"
