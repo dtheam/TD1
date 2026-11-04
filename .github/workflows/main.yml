@@ -1,4 +1,4 @@
-name: Pipeline Hello World
+name: Pipeline - Hello World
 
 # Déclenche la pipeline à chaque push sur le dépôt
 on: [push]

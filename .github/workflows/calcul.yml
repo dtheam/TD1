@@ -1,4 +1,4 @@
-name: Pipeline Calcul
+name: Pipeline - Calcul
 
 # Permet de lancer le script manuellement depuis GitHub en saisissant un nombre
 on:

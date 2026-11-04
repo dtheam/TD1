@@ -1,4 +1,4 @@
-name: Pipeline Identité
+name: Pipeline - Identité
 
 on: [push]
 

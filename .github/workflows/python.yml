@@ -1,4 +1,4 @@
-name: Pipeline Python
+name: Pipeline - Python
 
 # Se lance à chaque commit (push) de l'utilisateur
 on: [push]

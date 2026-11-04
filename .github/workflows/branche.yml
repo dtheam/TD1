@@ -1,4 +1,4 @@
-name: Pipeline Nom de Branche
+name: Pipeline - Nom de Branche
 
 on: [push]
 
