@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+  # On précise bien le namespace créé juste avant
+  namespace: tp-helloworld 
+  labels:
+    app: helloworld
+spec:
+  replicas: 3 # C'est ici que l'on demande les 3 copies
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: helloworld-container
+        # Remplace par l'image exacte que tu as uploadée sur Docker Hub au TP précédent
+        image: dtheam/hello-world-app:latest 
+        ports:
+        - containerPort: 80
